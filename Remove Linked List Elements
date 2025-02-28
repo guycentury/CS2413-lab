@@ -59,7 +59,8 @@ void prtLs(struct ListNode* head)
 }
 
 // Example
-int main() {
+int main() 
+{
     struct ListNode* head = newNd(1);
     head->next = newNd(2);
     head->next->next = newNd(6);
