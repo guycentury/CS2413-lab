@@ -1,0 +1,68 @@
+// Online C compiler to run C program online
+#include <stdio.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Defining the list
+struct ListNode 
+{
+    int val;
+    struct ListNode *next;
+};
+
+// reverse the linked list Function with loops
+struct ListNode* revLs(struct ListNode* head) 
+{
+    struct ListNode* pre = NULL;
+    struct ListNode* cur = head;
+    struct ListNode* nxt = NULL;
+
+    while (cur != NULL) 
+    {
+        nxt = cur->next;
+        cur->next = pre;
+        pre = cur;
+        cur = nxt;
+    }
+    return pre;
+}
+
+//create a new node function
+struct ListNode* newNd(int val) 
+{
+    struct ListNode* nd = (struct ListNode*)malloc(sizeof(struct ListNode));
+    nd->val = val;
+    nd->next = NULL;
+    return nd;
+}
+
+// to print linked list function
+void prtLs(struct ListNode* head) 
+{
+    struct ListNode* tmp = head;
+    while (tmp != NULL) {
+        printf("%d -> ", tmp->val);
+        tmp = tmp->next;
+    }
+    printf("NULL\n");
+}
+
+// Example
+int main() {
+    struct ListNode* head = newNd(1);
+    head->next = newNd(2);
+    head->next->next = newNd(3);
+    head->next->next->next = newNd(4);
+    head->next->next->next->next = newNd(5);
+
+    printf("Original list: ");
+    prtLs(head);
+
+    head = revLs(head);
+
+    printf("Reversed list: ");
+    prtLs(head);
+
+    return 0;
+}
