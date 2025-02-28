@@ -1,0 +1,81 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define List node
+struct ListNode 
+{
+    int val;
+    struct ListNode *next;
+};
+
+struct ListNode* remEl(struct ListNode* head, int val) 
+{
+    // Create a dummy node pointing to head
+    struct ListNode* dum = (struct ListNode*)malloc(sizeof(struct ListNode));
+    dum->next = head;
+    
+    struct ListNode* pre = dum;
+    struct ListNode* cur = head;
+    
+    while (cur != NULL) 
+    {
+        if (cur->val == val) 
+        {
+             // Skip node
+            pre->next = cur->next;  // Skip node
+            free(cur);  // Free memory
+        } 
+        else 
+        {
+            pre = cur;
+        }
+        cur = pre->next; //next node
+    }
+    
+    head = dum->next;
+    free(dum); 
+    return head;
+}
+
+// create a new node function
+struct ListNode* newNd(int val)
+{
+    struct ListNode* nd = (struct ListNode*)malloc(sizeof(struct ListNode));
+    nd->val = val;
+    nd->next = NULL;
+    return nd;
+}
+
+// print the linked list function
+void prtLs(struct ListNode* head) 
+{
+    struct ListNode* tmp = head;
+    while (tmp != NULL) 
+    {
+        printf("%d -> ", tmp->val);
+        tmp = tmp->next;
+    }
+    printf("NULL\n");
+}
+
+// Example
+int main() {
+    struct ListNode* head = newNd(1);
+    head->next = newNd(2);
+    head->next->next = newNd(6);
+    head->next->next->next = newNd(3);
+    head->next->next->next->next = newNd(4);
+    head->next->next->next->next->next = newNd(5);
+    head->next->next->next->next->next->next = newNd(6);
+    
+    printf("Original list: ");
+    prtLs(head);
+
+    int val = 6;
+    head = remEl(head, val);
+
+    printf("Updated list: ");
+    prtLs(head);
+
+    return 0;
+}
