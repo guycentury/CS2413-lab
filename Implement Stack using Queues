@@ -1,0 +1,129 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+
+typedef struct 
+{
+    int *arr;
+    int frt, bck, sz, cap;
+} Que;
+
+// Stack structure
+typedef struct 
+{
+    Que *q;
+} Stk;
+
+// create a queue Function to 
+Que* newQ(int cap) 
+{
+    Que *q = (Que*)malloc(sizeof(Que));
+    q->arr = (int*)malloc(cap * sizeof(int));
+    q->frt = 0;
+    q->bck = 0;
+    q->sz = 0;
+    q->cap = cap;
+    return q;
+}
+
+// is Queue empty
+bool isQmt(Que *q) 
+{
+    return q->sz == 0;
+}
+
+// Enqueue 
+void enQ(Que *q, int val) 
+{
+    if (q->sz < q->cap) 
+    {
+        q->arr[q->bck] = val;
+        q->bck = (q->bck + 1) % q->cap;
+        q->sz++;
+    }
+}
+
+// The dequeue operation
+int deQ(Que *q) 
+{
+    if (!isQmt(q)) 
+    {
+        int val = q->arr[q->frt];
+        q->frt = (q->frt + 1) % q->cap;
+        q->sz--;
+        return val;
+    }
+    return -1;
+}
+
+
+int frtQ(Que *q) 
+{
+    return q->arr[q->frt];
+}
+
+// Stack Creator
+Stk* newS(int cap) 
+{
+    Stk *s = (Stk*)malloc(sizeof(Stk));
+    s->q = newQ(cap);
+    return s;
+}
+
+
+void push(Stk *s, int val) 
+{
+    int i, n = s->q->sz;
+    enQ(s->q, val);
+    for (i = 0; i < n; i++) 
+    {
+        enQ(s->q, deQ(s->q));
+    }
+}
+
+
+int pop(Stk *s) 
+{
+    return deQ(s->q);
+}
+
+// Get the top of the stack
+int top(Stk *s) 
+{
+    return frtQ(s->q);
+}
+
+// is stack empty checker
+bool isSEm(Stk *s)
+{
+    return isQmt(s->q);
+}
+
+// Free the stack memory
+void freeS(Stk *s) 
+{
+    free(s->q->arr);
+    free(s->q);
+    free(s);
+}
+
+
+int main() 
+{
+    Stk *s = newS(10);
+    
+    push(s, 1);
+    push(s, 2);
+    push(s, 3);
+    
+    printf("Top: %d\n", top(s));
+    printf("Pop: %d\n", pop(s));
+    printf("Pop: %d\n", pop(s));
+    printf("Empty: %d\n", isSEm(s));
+    printf("Pop: %d\n", pop(s));
+    printf("Empty: %d\n", isSEm(s));
+    
+    freeS(s);
+    return 0;
+}
