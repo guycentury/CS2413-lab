@@ -1,0 +1,144 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+// Stack structure
+typedef struct 
+{
+    int *arr;
+    int top, cap;
+} Stk;
+
+// Queues structure using two stacks 
+typedef struct 
+{
+    Stk *in, *out;
+} Que;
+
+// create a stack Function
+Stk* newS(int cap) 
+{
+    Stk *s = (Stk*)malloc(sizeof(Stk));
+    s->arr = (int*)malloc(cap * sizeof(int));
+    s->top = -1;
+    s->cap = cap;
+    return s;
+}
+
+// is stack empty checker
+bool isSEm(Stk *s)
+{
+    return s->top == -1;
+}
+
+// is stack full checker 
+bool isSFu(Stk *s) 
+{
+    return s->top == s->cap - 1;
+}
+
+
+void pushS(Stk *s, int val) 
+{
+    if (!isSFu(s)) 
+    {
+        s->arr[++(s->top)] = val;
+    } 
+    else 
+    {
+        printf("Stack is full!\n");
+    }
+}
+
+// Pop from stack
+int popS(Stk *s) 
+{
+    if (!isSEm(s)) 
+    {
+        return s->arr[(s->top)--];
+    }
+    return -1;
+}
+
+// Peek top of stack
+int topS(Stk *s) {
+    return s->arr[s->top];
+}
+
+//  ueue creater
+Que* newQ(int cap)
+{
+    Que *q = (Que*)malloc(sizeof(Que));
+    q->in = newS(cap);
+    q->out = newS(cap);
+    return q;
+}
+
+
+void pushQ(Que *q, int val) 
+{
+    pushS(q->in, val);
+}
+
+
+int popQ(Que *q) 
+{
+    if (isSEm(q->out)) 
+    {
+        while (!isSEm(q->in))
+        {
+            pushS(q->out, popS(q->in));
+        }
+    }
+    return popS(q->out);
+}
+
+// Gets the front of queue
+int frtQ(Que *q) 
+{
+    if (isSEm(q->out)) 
+    {
+        while (!isSEm(q->in)) 
+        {
+            pushS(q->out, popS(q->in));
+        }
+    }
+    return topS(q->out);
+}
+
+// is queue empty checker
+bool isQEm(Que *q) 
+{
+    return isSEm(q->in) && isSEm(q->out);
+}
+
+// Free queue memory
+void freeQ(Que *q) 
+{
+    free(q->in->arr);
+    free(q->out->arr);
+    free(q->in);
+    free(q->out);
+    free(q);
+}
+
+
+int main() 
+{
+    Que *q = newQ(3);  // Small capacity to test full condition
+    
+    pushQ(q, 1);
+    pushQ(q, 2);
+    pushQ(q, 3);
+    pushQ(q, 4); // This should trigger "Stack is full!" message
+
+    printf("Front: %d\n", frtQ(q));
+    printf("Pop: %d\n", popQ(q));
+    printf("Pop: %d\n", popQ(q));
+    printf("Empty: %d\n", isQEm(q));
+    printf("Pop: %d\n", popQ(q));
+    printf("Empty: %d\n", isQEm(q));
+
+    freeQ(q);
+    return 0;
+}
