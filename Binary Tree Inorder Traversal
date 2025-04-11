@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Tree node definition
+struct TreeNode {
+    int val;
+    struct TreeNode *lft;
+    struct TreeNode *rgt;
+};
+
+// Helper function for recursive inorder
+void recIO(struct TreeNode* nd, int* res, int* idx) {
+    if (nd == NULL) return;
+    recIO(nd->lft, res, idx);
+    res[(*idx)++] = nd->val;
+    recIO(nd->rgt, res, idx);
+}
+
+// Inorder traversal wrapper
+int* inOrd(struct TreeNode* rt, int* retSz) {
+    int *res = (int*)malloc(100 * sizeof(int));
+    int idx = 0;
+    recIO(rt, res, &idx);
+    *retSz = idx;
+    return res;
+}
+
+// Helper to create a new tree node
+struct TreeNode* newNd(int val) {
+    struct TreeNode *nd = (struct TreeNode*)malloc(sizeof(struct TreeNode));
+    nd->val = val;
+    nd->lft = NULL;
+    nd->rgt = NULL;
+    return nd;
+}
+
+// Test the function
+int main() {
+    struct TreeNode *rt = newNd(1);
+    rt->rgt = newNd(2);
+    rt->rgt->lft = newNd(3);
+
+    int sz;
+    int *res = inOrd(rt, &sz);
+
+    printf("Inorder: ");
+    for (int i = 0; i < sz; i++) {
+        printf("%d ", res[i]);
+    }
+    printf("\n");
+
+    free(res);
+    return 0;
+}
