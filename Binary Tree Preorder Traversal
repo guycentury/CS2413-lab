@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// define tree node 
+// define tree node
 struct TreeNode 
 {
     int val;
@@ -9,22 +9,75 @@ struct TreeNode
     struct TreeNode *rgt;
 };
 
-// Helper function
-void recIO(struct TreeNode* nd, int* res, int* idx) 
+// custom stack
+typedef struct 
 {
-    if (nd == NULL) return;
-    recIO(nd->lft, res, idx);
-    res[(*idx)++] = nd->val;
-    recIO(nd->rgt, res, idx);
+    struct TreeNode **arr;
+    int top;
+    int cap;
+} Stk;
+
+// new stack
+Stk* newS(int cap) 
+{
+    Stk *s = (Stk*)malloc(sizeof(Stk));
+    s->arr = (struct TreeNode**)malloc(sizeof(struct TreeNode*) * cap);
+    s->top = -1;
+    s->cap = cap;
+    return s;
 }
 
-// wrapper
-int* inOrd(struct TreeNode* rt, int* retSz)  
+// Push
+void pushS(Stk *s, struct TreeNode *nd) 
+{
+    if (s->top < s->cap - 1) 
+    {
+        s->arr[++(s->top)] = nd;
+    }
+}
+
+// Pop 
+struct TreeNode* popS(Stk *s) 
+{
+    if (s->top >= 0) 
+    {
+        return s->arr[(s->top)--];
+    }
+    return NULL;
+}
+
+// is stack empty checker
+int isEm(Stk *s) 
+{
+    return s->top == -1;
+}
+
+// Preorder traversal
+int* preOrd(struct TreeNode* rt, int* retSz) 
 {
     int *res = (int*)malloc(100 * sizeof(int));
     int idx = 0;
-    recIO(rt, res, &idx);
+    if (rt == NULL) 
+    {
+        *retSz = 0;
+        return res;
+    }
+
+    Stk *stk = newS(100);
+    pushS(stk, rt);
+
+    while (!isEm(stk)) 
+    {
+        struct TreeNode *cur = popS(stk);
+        res[idx++] = cur->val;
+
+        if (cur->rgt != NULL) pushS(stk, cur->rgt);
+        if (cur->lft != NULL) pushS(stk, cur->lft);
+    }
+
     *retSz = idx;
+    free(stk->arr);
+    free(stk);
     return res;
 }
 
@@ -38,7 +91,7 @@ struct TreeNode* newNd(int val)
     return nd;
 }
 
-// main
+// Main
 int main() 
 {
     struct TreeNode *rt = newNd(1);
@@ -46,10 +99,10 @@ int main()
     rt->rgt->lft = newNd(3);
 
     int sz;
-    int *res = inOrd(rt, &sz);
+    int *res = preOrd(rt, &sz);
 
-    printf("Inorder: ");
-    for (int i = 0; i < sz; i++) 
+    printf("Preorder: ");
+    for (int i = 0; i < sz; i++)
     {
         printf("%d ", res[i]);
     }
@@ -58,3 +111,4 @@ int main()
     free(res);
     return 0;
 }
+
