@@ -1,0 +1,72 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// DFS to mark land as visited
+void dfs(char** grd, int** vis, int r, int c, int m, int n) {
+    // Check bounds
+    if (r < 0 || c < 0 || r >= m || c >= n) return;
+    if (grd[r][c] != '1' || vis[r][c]) return;
+
+    vis[r][c] = 1;
+
+    dfs(grd, vis, r + 1, c, m, n);
+    dfs(grd, vis, r - 1, c, m, n);
+    dfs(grd, vis, r, c + 1, m, n);
+    dfs(grd, vis, r, c - 1, m, n);
+}
+
+// Check if cell should start new island
+int chk(char** grd, int** vis, int r, int c) {
+    return grd[r][c] == '1' && !vis[r][c];
+}
+
+// Main function to count islands
+int numIslnds(char** grd, int m, int* nArr) {
+    if (grd == NULL || m == 0 || nArr == NULL || *nArr == 0) return 0;
+    int n = *nArr;
+
+    // Visited array
+    int** vis = (int**)malloc(m * sizeof(int*));
+    for (int i = 0; i < m; i++) {
+        vis[i] = (int*)calloc(n, sizeof(int));
+    }
+
+    int cnt = 0;
+    for (int r = 0; r < m; r++) {
+        for (int c = 0; c < n; c++) {
+            if (chk(grd, vis, r, c)) {
+                dfs(grd, vis, r, c, m, n);
+                cnt++;
+            }
+        }
+    }
+
+    // Free memory
+    for (int i = 0; i < m; i++) free(vis[i]);
+    free(vis);
+
+    return cnt;
+}
+
+// Test example
+int main() {
+    char* raw[] = {
+        "11000",
+        "11000",
+        "00100",
+        "00011"
+    };
+    int m = 4, n = 5;
+
+    // Convert to grid of char* arrays
+    char** grd = (char**)malloc(m * sizeof(char*));
+    for (int i = 0; i < m; i++) {
+        grd[i] = raw[i];
+    }
+
+    int res = numIslnds(grd, m, &n);
+    printf("Number of islands: %d\n", res);
+
+    free(grd);
+    return 0;
+}
