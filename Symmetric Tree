@@ -3,14 +3,16 @@
 #include <stdbool.h>
 
 // Tree node structure
-struct TreeNode {
+struct TreeNode 
+{
     int val;
     struct TreeNode *lft;
     struct TreeNode *rgt;
 };
 
-// Helper function to compare two subtrees
-bool isMir(struct TreeNode* a, struct TreeNode* b) {
+// Comparing helper function
+bool isMir(struct TreeNode* a, struct TreeNode* b) 
+{
     if (a == NULL && b == NULL) return true;
     if (a == NULL || b == NULL) return false;
     if (a->val != b->val) return false;
@@ -18,13 +20,15 @@ bool isMir(struct TreeNode* a, struct TreeNode* b) {
 }
 
 // Main symmetric check function
-bool isSym(struct TreeNode* rt) {
+bool isSym(struct TreeNode* rt)
+{
     if (rt == NULL) return true;
     return isMir(rt->lft, rt->rgt);
 }
 
 // Helper to create a new node
-struct TreeNode* newNd(int val) {
+struct TreeNode* newNd(int val) 
+{
     struct TreeNode* nd = (struct TreeNode*)malloc(sizeof(struct TreeNode));
     nd->val = val;
     nd->lft = NULL;
@@ -33,7 +37,8 @@ struct TreeNode* newNd(int val) {
 }
 
 // Test the function
-int main() {
+int main() 
+{
     // Constructing a symmetric tree:
     //     1
     //    / \
@@ -49,9 +54,12 @@ int main() {
     rt->rgt->lft = newNd(4);
     rt->rgt->rgt = newNd(3);
 
-    if (isSym(rt)) {
+    if (isSym(rt))
+    {
         printf("Tree is symmetric.\n");
-    } else {
+    } 
+    else 
+    {
         printf("Tree is not symmetric.\n");
     }
 
